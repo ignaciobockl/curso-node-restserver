@@ -6,8 +6,9 @@ const Usuario = require('../models/usuario');
 const usuariosGet = async(req = request, res = response) => {
 
     // const { q, nombre = 'No name', apikey, limit, page = 1 } = req.query;
-    const { limite = 5, 
-        desde = 0 
+    const {
+        limite = 5,
+            desde = 0
     } = req.query;
 
     const estadoBorrado = { estado: true };
@@ -19,11 +20,11 @@ const usuariosGet = async(req = request, res = response) => {
     // const total = await Usuario.countDocuments( estadoBorrado );
 
     // mejor perfomance con una promesa
-    const [ total, usuarios ] = await Promise.all([
-        Usuario.count( estadoBorrado ),
-        Usuario.find( estadoBorrado )
-            .skip(Number( desde ))
-            .limit(Number( limite ))
+    const [total, usuarios] = await Promise.all([
+        Usuario.count(estadoBorrado),
+        Usuario.find(estadoBorrado)
+        .skip(Number(desde))
+        .limit(Number(limite))
     ]);
 
     res.json({
@@ -39,7 +40,7 @@ const usuariosPost = async(req, res = response) => {
 
     // Encriptar la contraseña
     const salt = bcryptjs.genSaltSync();
-    usuario.password = bcryptjs.hashSync( password, salt );
+    usuario.password = bcryptjs.hashSync(password, salt);
 
     // Guardar en BD
     await usuario.save();
@@ -55,13 +56,13 @@ const usuariosPut = async(req, res = response) => {
     const { _id, password, google, correo, ...resto } = req.body;
 
     // TODO validar contra base de datos
-    if ( password ) {
+    if (password) {
         // Encriptar la contraseña
         const salt = bcryptjs.genSaltSync();
-        resto.password = bcryptjs.hashSync( password, salt );
+        resto.password = bcryptjs.hashSync(password, salt);
     }
 
-    const usuario = await Usuario.findByIdAndUpdate( id, resto );
+    const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
     res.json({
         msg: 'put API - usuariosPut',
@@ -84,9 +85,9 @@ const usuariosDelete = async(req, res = response) => {
     // const usuario = await Usuario.findByIdAndDelete( id );
 
     // Borrado Lógico
-    const usuario = await Usuario.findByIdAndUpdate ( id, { estado: false } );
+    const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
 
-    res.json( usuario );
+    res.json(usuario);
 }
 
 module.exports = {
